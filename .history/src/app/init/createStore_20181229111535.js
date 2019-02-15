@@ -1,5 +1,10 @@
-import {createStore as createReduxStore, combineReducers, applyMiddleware, compose} from 'redux';
-import {connectRouter, routerMiddleware} from 'connected-react-router';
+import {
+  createStore as createReduxStore,
+  combineReducers,
+  applyMiddleware,
+  compose,
+} from 'redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
 import reduxThunk from 'redux-thunk';
 import home from 'views/home/reducer';
 import user from 'views/user/reducer';
@@ -18,9 +23,22 @@ function createStore(history, preloadedState = {}) {
   // middlewares
   const middlewares = [routerMiddleware(history), reduxThunk];
 
-  const store = createReduxStore(connectRouter(history)(combineReducers({router: connectRouter(history), home, user, app})), preloadedState, composeEnhancers(applyMiddleware(...middlewares)),);
+  const store = createReduxStore(
+    connectRouter(history)(combineReducers({
+      router: connectRouter(history),
+      home,
+      user,
+      app,
+    })),
+    preloadedState,
+    composeEnhancers(applyMiddleware(...middlewares)),
+  );
 
-  return {store, history, routes};
+  return {
+    store,
+    history,
+    routes,
+  };
 }
 
 export default createStore;

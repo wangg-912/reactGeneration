@@ -20,13 +20,13 @@ module.exports = {
   target: 'web',
   context: SOURCE_DIR,
   entry: {
-    client: './index.js',
+    client: './index.js'
   },
   output: {
     path: CLIENT_DIR,
     publicPath: ASSET_PATH,
     filename: 'assets/[name].[hash:8].js',
-    libraryTarget: 'umd',
+    libraryTarget: 'umd'
   },
   optimization: {
     splitChunks: {
@@ -34,93 +34,88 @@ module.exports = {
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
-          chunks: 'all',
-        },
-      },
-    },
+          chunks: 'all'
+        }
+      }
+    }
   },
   module: {
     rules: [{
       test: /\.(jsx|js)$/,
       exclude: /node_modules/,
       use: {
-        loader: 'babel-loader',
-      },
+        loader: 'babel-loader'
+      }
     }, {
       test: /\.scss$/,
       exclude: /node_modules/,
       use: IS_PROD ? [
-        MiniCssExtractPlugin.loader,
-        'css-loader',
-        {
+        MiniCssExtractPlugin.loader, {
+          loader: 'css-loader',
+          options: {
+            minimize: true
+          }
+        }, {
           loader: 'postcss-loader',
           options: {
             plugins: () => [autoprefixer({
               browsers: 'last 5 versions'
             })],
-            sourceMap: true,
-          },
-        },
-        {
+            sourceMap: true
+          }
+        }, {
           loader: 'sass-loader',
           options: {
-            includePaths: [
-              SOURCE_DIR,
-            ],
-          },
-        },
+            includePaths: [SOURCE_DIR]
+          }
+        }
       ] : [{
           loader: 'style-loader',
           options: {
             singleton: true
-          },
+          }
         },
-        'css-loader',
-        {
+        'css-loader', {
           loader: 'postcss-loader',
           options: {
             plugins: () => [autoprefixer({
               browsers: 'last 5 versions'
             })],
-            sourceMap: true,
-          },
-        },
-        {
+            sourceMap: true
+          }
+        }, {
           loader: 'sass-loader',
           options: {
-            includePaths: [
-              SOURCE_DIR,
-            ],
-          },
-        },
-      ],
+            includePaths: [SOURCE_DIR]
+          }
+        }
+      ]
     }, {
       test: /\.css$/,
       include: /node_modules/,
       use: [
         MiniCssExtractPlugin.loader,
-        'css-loader',
-        {
+        'css-loader', {
           loader: 'postcss-loader',
           options: {
             plugins: () => [autoprefixer({
               browsers: 'last 5 versions'
             })],
-            sourceMap: true,
-          },
-        },
+            sourceMap: true
+          }
+        }
       ]
     }, {
       test: /\.less$/,
       use: [{
-        loader: 'style-loader',
+        loader: "style-loader"
       }, {
-        loader: 'css-loader',
+        loader: "css-loader"
       }, {
-        loader: 'less-loader',
+        loader: "less-loader",
         options: {
           strictMath: true,
-          noIeCompat: true,
+          noIeCompat: true
         }
       }]
     }, {
@@ -129,23 +124,23 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '[name].[hash:8].[ext]',
-          outputPath: 'assets/images/',
-        },
+          outputPath: 'assets/images/'
+        }
       } : {
-        loader: 'url-loader',
-      },
-    }],
+        loader: 'url-loader'
+      }
+    }]
   },
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'assets/css/style.[hash:8].css',
-      chunkFilename: 'assets/css/[id].[hash:8].css',
+      chunkFilename: 'assets/css/[id].[hash:8].css'
     }),
     new CopyWebpackPlugin([{
       from: 'favicon.ico'
-    }, ]),
+    }]),
     new HtmlWebpackPlugin({
-      title: 'My App',
+      title: 'React App',
       filename: './index.html',
       template: './index.ejs'
     }),
@@ -153,12 +148,13 @@ module.exports = {
       url: 'http://localhost:8181'
     })
   ],
-  devtool: IS_PROD ? 'source-map' : 'eval-source-map',
+  devtool: IS_PROD ?
+    'source-map' : 'eval-source-map',
   devServer: {
     port: process.env.PORT || 8181,
     host: 'localhost',
     publicPath: '/',
     contentBase: SOURCE_DIR,
-    historyApiFallback: true,
-  },
+    historyApiFallback: true
+  }
 };
