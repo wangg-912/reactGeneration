@@ -112,17 +112,56 @@ module.exports = {
       ]
     }, {
       test: /\.less$/,
-      use: [{
-        loader: 'style-loader',
-      }, {
-        loader: 'css-loader',
-      }, {
-        loader: 'less-loader',
-        options: {
-          strictMath: true,
-          noIeCompat: true,
-        }
-      }]
+      exclude: /node_modules/,
+      use: IS_PROD ? [
+        MiniCssExtractPlugin.loader,
+        'css-loader',
+        {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => [autoprefixer({
+              browsers: 'last 5 versions'
+            })],
+            sourceMap: true,
+          },
+        },
+        {
+          loader: 'less-loader',
+          options: {
+            includePaths: [
+              SOURCE_DIR,
+            ],
+            strictMath: true,
+            noIeCompat: true,
+          },
+        },
+      ] : [{
+          loader: 'style-loader',
+          options: {
+            singleton: true
+          },
+        },
+        'css-loader',
+        {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => [autoprefixer({
+              browsers: 'last 5 versions'
+            })],
+            sourceMap: true,
+          },
+        },
+        {
+          loader: 'less-loader',
+          options: {
+            includePaths: [
+              SOURCE_DIR,
+            ],
+            strictMath: true,
+            noIeCompat: true,
+          },
+        },
+      ],
     }, {
       test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif)(\?.*)?$/i,
       use: IS_PROD ? {
