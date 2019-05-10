@@ -1,6 +1,6 @@
 # react-generation
 
-依赖于 [Ant Design Pro](https://pro.ant.design/).
+Introduction of [Ant Design Pro](https://pro.ant.design/).
 
 Non-opinionated React Admin System integrated with decentralized composable features.
 
@@ -22,9 +22,10 @@ $ npm run dev            # start webpack-dev-server in another terminal window a
 
 ## Other
 
-Support SCSS, less style precompiled language.
+Support Scss, Less style precompiled language.
 
 ## Login Credentials
 
 - Admin: username `admin` & password `123`, authorities is `'admin'`
 - User: username `user` & password `123`, authorities is `'user'`
+
