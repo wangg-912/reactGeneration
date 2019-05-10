@@ -1,27 +1,71 @@
-import React, { lazy, Suspense } from 'react';
-import Loading from 'views/loading';
+import Login from 'views/login';
+import Outlets from 'views/outlets';
+import OutletDetail from 'views/outletDetail';
+import WorkInProgress from 'views/workInProgress';
+import Unauthorized from 'views/unauthorized';
 
-const Home = lazy(() => import('views/home'));
-const User = lazy(() => import('views/user'));
+const authorizedRoutes = [{
+  path: '/dashboard/analysis/realtime',
+  exact: true,
+  permissions: ['admin', 'user'],
+  redirect: '/login',
+  component: WorkInProgress,
+  pageTitle: '',
+}, {
+  path: '/dashboard/analysis/offline',
+  exact: true,
+  permissions: ['admin', 'user'],
+  redirect: '/login',
+  component: WorkInProgress,
+  pageTitle: '',
+}, {
+  path: '/dashboard/workplace',
+  exact: true,
+  permissions: ['admin'],
+  redirect: '/login',
+  component: WorkInProgress,
+  pageTitle: '',
+}, {
+  path: '/outlets',
+  exact: true,
+  permissions: ['admin', 'user'],
+  component: Outlets,
+  unauthorized: Unauthorized,
+  pageTitle: 'pageTitle_outlets',
+  breadcrumb: ['/outlets'],
+}, {
+  path: '/outlets/:id',
+  exact: true,
+  permissions: ['admin', 'user'],
+  component: OutletDetail,
+  unauthorized: Unauthorized,
+  pageTitle: 'pageTitle_outletDetail',
+  breadcrumb: ['/outlets', '/outlets/:id'],
+}, {
+  path: '/exception/403',
+  exact: true,
+  permissions: ['god'],
+  component: WorkInProgress,
+  unauthorized: Unauthorized,
+}];
 
-const routes = [
-  {
-    path: '/',
-    exact: true,
-    component: () => (
-      <Suspense fallback={<Loading />}>
-        <Home />
-      </Suspense>
-    ),
-  },
-  {
-    path: '/user',
-    component: () => (
-      <Suspense fallback={<Loading />}>
-        <User />
-      </Suspense>
-    ),
-  },
+const normalRoutes = [{
+  path: '/',
+  exact: true,
+  redirect: '/outlets',
+}, {
+  path: '/login',
+  exact: true,
+  component: Login,
+}];
+
+const combineRoutes = [
+  ...authorizedRoutes,
+  ...normalRoutes,
 ];
 
-export default routes;
+export {
+  authorizedRoutes,
+  normalRoutes,
+  combineRoutes,
+};

@@ -1,21 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route} from 'react-router-dom';
-import {ConnectedRouter} from 'connected-react-router';
-import map from 'lodash/map';
-import routes from '../config/routes';
+import { ConnectedRouter } from 'connected-react-router';
+import { MultiIntlProvider } from 'react-intl-context';
+import { connect } from 'react-redux';
+import AclRouter from 'react-acl-router';
+import BasicLayout from 'layouts/BasicLayout';
+import NormalLayout from 'layouts/NormalLayout';
+import NotFound from 'views/notFound';
+import { messages, buildConfig } from '../config/buildConfig';
+import { authorizedRoutes, normalRoutes } from '../config/routes';
+
+const { locale } = buildConfig;
 
 const propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
-const Router = ({history}) => (
+const Router = ({ history, user }) => (
   <ConnectedRouter history={history}>
-    <div>
-      {map(routes, (route, idx) => (<Route key={idx} {...route}/>))}
-    </div>
+    <MultiIntlProvider
+      defaultLocale={locale}
+      messageMap={messages}
+    >
+      <AclRouter
+        authorities={user.authorities}
+        authorizedRoutes={authorizedRoutes}
+        authorizedLayout={BasicLayout}
+        normalRoutes={normalRoutes}
+        normalLayout={NormalLayout}
+        notFound={NotFound}
+      />
+    </MultiIntlProvider>
   </ConnectedRouter>
 );
 
+const mapStateToProps = state => ({
+  user: state.app.user,
+});
+
 Router.propTypes = propTypes;
-export default Router;
+export default connect(mapStateToProps)(Router);

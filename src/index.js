@@ -1,10 +1,11 @@
 import ReactDOM from 'react-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
-import { createStore, createApp } from 'app';
-
-import './styles/index.scss';
+import 'antd/dist/antd.css';
+import { createStore, createApp, initClient } from './app';
 
 const { store, history } = createStore(createBrowserHistory(), {});
-const app = createApp(store, history);
+const application = createApp(store, history);
 
-ReactDOM.render(app, window.document.getElementById('app'));
+initClient(store.dispatch);
+
+ReactDOM.render(application, window.document.getElementById('app'));

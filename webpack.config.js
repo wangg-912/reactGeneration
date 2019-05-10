@@ -1,12 +1,14 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
+const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const pkg = require('./package.json');
+const buildConfig = require('./buildConfig');
 
 const ENV = process.env.NODE_ENV || 'development';
+const BUILD_DOMAIN = process.env.BUILD_DOMAIN || 'localhost';
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 const VERSION = `v${pkg.version}`;
 const IS_PROD = ENV === 'production';
@@ -14,6 +16,9 @@ const IS_PROD = ENV === 'production';
 const SOURCE_DIR = path.resolve(__dirname, 'src');
 const OUTPUT_DIR = path.resolve(__dirname, 'build');
 const CLIENT_DIR = path.join(OUTPUT_DIR, VERSION);
+
+const config = buildConfig[BUILD_DOMAIN];
+const localeMessages = require('./src/i18n/locale.json');
 
 module.exports = {
   mode: ENV,
@@ -39,6 +44,9 @@ module.exports = {
       },
     },
   },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+  },
   module: {
     rules: [{
       test: /\.(jsx|js)$/,
@@ -51,13 +59,14 @@ module.exports = {
       exclude: /node_modules/,
       use: IS_PROD ? [
         MiniCssExtractPlugin.loader,
-        'css-loader',
+        {
+          loader: 'css-loader',
+          options: { minimize: true },
+        },
         {
           loader: 'postcss-loader',
           options: {
-            plugins: () => [autoprefixer({
-              browsers: 'last 5 versions'
-            })],
+            plugins: () => [autoprefixer({ browsers: 'last 5 versions' })],
             sourceMap: true,
           },
         },
@@ -69,19 +78,16 @@ module.exports = {
             ],
           },
         },
-      ] : [{
+      ] : [
+        {
           loader: 'style-loader',
-          options: {
-            singleton: true
-          },
+          options: { singleton: true },
         },
         'css-loader',
         {
           loader: 'postcss-loader',
           options: {
-            plugins: () => [autoprefixer({
-              browsers: 'last 5 versions'
-            })],
+            plugins: () => [autoprefixer({ browsers: 'last 5 versions' })],
             sourceMap: true,
           },
         },
@@ -91,6 +97,26 @@ module.exports = {
             includePaths: [
               SOURCE_DIR,
             ],
+          },
+        },
+      ],
+    }, {
+      test: /\.less$/,
+      include: /node_modules/,
+      use: [
+        MiniCssExtractPlugin.loader,
+        'css-loader',
+        {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => [autoprefixer({ browsers: 'last 5 versions' })],
+            sourceMap: true,
+          },
+        },
+        {
+          loader: 'less-loader',
+          options: {
+            javascriptEnabled: true,
           },
         },
       ],
@@ -176,21 +202,24 @@ module.exports = {
     }],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(ENV),
+      'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
+      'process.env.BUILD_CONFIG': JSON.stringify(config),
+      'process.env.BUILD_LOCALE_MESSAGES': JSON.stringify(localeMessages),
+    }),
     new MiniCssExtractPlugin({
       filename: 'assets/css/style.[hash:8].css',
       chunkFilename: 'assets/css/[id].[hash:8].css',
     }),
-    new CopyWebpackPlugin([{
-      from: 'favicon.ico'
-    }, ]),
+    new CopyWebpackPlugin([
+      { from: 'favicon.ico' },
+    ]),
     new HtmlWebpackPlugin({
-      title: 'My App',
+      title: 'React App',
       filename: './index.html',
-      template: './index.ejs'
+      template: './index.ejs',
     }),
-    new OpenBrowserPlugin({
-      url: 'http://localhost:8181'
-    })
   ],
   devtool: IS_PROD ? 'source-map' : 'eval-source-map',
   devServer: {

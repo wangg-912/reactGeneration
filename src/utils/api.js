@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { buildConfig } from 'app/config/buildConfig';
 
 const defaultHeader = {
   Accept: 'application/json',
@@ -6,12 +7,13 @@ const defaultHeader = {
 };
 
 const instance = axios.create({
+  baseURL: buildConfig.apiDomain,
   timeout: 5000,
   headers: defaultHeader,
   withCredentials: true,
 });
 
-const returnJson = (response) => response.data;
+const returnJson = response => response.data;
 
 const standardResponse = (response) => {
   if (response.status < 400) {
@@ -32,11 +34,17 @@ const api = () => {
         ...options,
       };
     },
-
-    get: (url, query) =>
-      opt.instance.get(url, { params: query }).then(standardResponse),
-
-    post: (url, data) => opt.instance.post(url, data).then(standardResponse),
+    get: (url, query) => (
+      opt.instance.get(url, {
+        params: query,
+      }).then(standardResponse)
+    ),
+    post: (url, data) => (
+      opt.instance.post(url, data).then(standardResponse)
+    ),
+    delete: url => (
+      opt.instance.delete(url).then(standardResponse)
+    ),
   };
 };
 

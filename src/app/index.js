@@ -1,8 +1,9 @@
 import createApp from './init/createApp';
 import createStore from './init/createStore';
-import './../styles/less/base.less'
+import initClient from './init/initClient';
 
 export {
-    createApp,
-    createStore
+  createApp,
+  createStore,
+  initClient,
 };

@@ -1,36 +1,30 @@
-# React project
+# react-generation
 
-## Getting Started
+依赖于 [Ant Design Pro](https://pro.ant.design/).
 
-### Development
+Non-opinionated React Admin System integrated with decentralized composable features.
 
-```bash
-npm install
-npm run dev
-```
+## Features
 
-Navigate to `http://localhost:8181`
+- :globe_with_meridians: **Internationalization**: [react-intl-context](https://github.com/AlanWei/react-intl-context)
+- :lock: **Access control list**: [react-acl-router](https://github.com/AlanWei/react-acl-router)
+- :memo: **Nested menu**: [react-sider](https://github.com/AlanWei/react-sider)
 
-### Build
-
-```bash
-npm run build
-```
-
-Compiled assets files will be in `build` folder
-
-### Test
+## Usage
 
 ```bash
-npm run test
+$ git clone https://github.com/wg-paddme/reactGeneration
+$ cd reactGeneration
+$ npm run install
+$ npm run mock:server    # start mock data server at http://localhost:3000, npm run mock:server also works
+$ npm run dev            # start webpack-dev-server in another terminal window at http://localhost:8181, npm run dev also works
 ```
 
----
+## Other
 
-# CHANGLOG
+Support SCSS, less style precompiled language.
 
-### 2018.12.29
+## Login Credentials
 
-1. Upgrade to Webpack 4.
-2. Clean up Babel & ESLint settings.
-   > For the server-side-rendering version, please visit [react-project-ssh](https://github.com/wg-paddme/reactGeneration.git)
+- Admin: username `admin` & password `123`, authorities is `'admin'`
+- User: username `user` & password `123`, authorities is `'user'`
